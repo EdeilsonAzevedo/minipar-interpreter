@@ -1,0 +1,69 @@
+/* 
+ * DEMONSTRAÇÃO DE EXECUÇÃO PARALELA
+ * Este programa mostra dois cálculos matemáticos rodando simultaneamente
+ */
+
+/* 
+ * Calcula o fatorial passo a passo
+ */
+func fatorial_detalhado(n: number) -> void
+{
+  produto: number = 1
+  passo: number = 1
+  
+  print("[Fatorial] Iniciando cálculo do fatorial de:", n)
+  
+  while(passo <= n)
+  {
+    produto = produto * passo
+    print("[Fatorial] Passo", passo, ":", produto)
+    passo = passo + 1
+    sleep(1)
+  }
+  
+  print("[Fatorial] Resultado final =", produto)
+}
+
+/* 
+ * Calcula a sequência de Fibonacci até o n-ésimo termo
+ */
+func fibonacci_ate_n(n: number) -> void
+{
+  primeiro: number = 0
+  segundo: number = 1
+  proximo: number = 0
+  contador: number = 0
+  
+  print("[Fibonacci] Gerando sequência até o termo:", n)
+  
+  while(contador < n)
+  {
+    print("[Fibonacci] Termo", contador, "=", primeiro)
+    
+    proximo = primeiro + segundo
+    primeiro = segundo
+    segundo = proximo
+    
+    contador = contador + 1
+    sleep(1)
+  }
+  
+  print("[Fibonacci] Sequência completa!")
+}
+
+/* Programa principal */
+print("=== CÁLCULOS MATEMÁTICOS EM PARALELO ===")
+
+/* Leitura dos valores de entrada */
+num_fatorial: number = to_number(input("Digite um número para calcular o fatorial: "))
+num_fibonacci: number = to_number(input("Digite quantos termos de Fibonacci calcular: "))
+
+print("Iniciando processamento paralelo...")
+
+/* Execução paralela das duas funções */
+par{
+  fatorial_detalhado(num_fatorial)
+  fibonacci_ate_n(num_fibonacci)
+}
+
+print("Processamento paralelo concluído!")

@@ -1,0 +1,17 @@
+/* cliente */
+# Função que envia as operações desejadas para o servidor na porta definida 
+
+c_channel usuario {"localhost", 8585}
+
+while(true){
+  expressao: string = input("Expressão matemática: ")
+  
+  if (expressao == "exit"){
+    break
+  }
+  
+  resposta: string = usuario.send(expressao)
+  print(resposta)
+}
+
+usuario.close()

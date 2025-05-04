@@ -1,0 +1,80 @@
+/* 
+ * IMPLEMENTAÇÃO DE PERCEPTRON BÁSICO
+ * 
+ * Este programa demonstra o treinamento de um neurônio artificial simples
+ * (perceptron) usando a regra de aprendizado por correção de erro.
+ * O perceptron aprende a mapear uma entrada para uma saída desejada.
+ */
+
+# Parâmetros de entrada e configuração inicial
+valor_entrada: number = 1        # Valor de entrada do neurônio
+saida_esperada: number = 0       # Valor que queremos que o neurônio produza
+
+# Parâmetros de aprendizado
+peso_sinapse: number = 0.5       # Peso inicial da conexão
+taxa_aprendizado: number = 0.01  # Taxa que controla a velocidade de aprendizado
+intercepto: number = 1           # Valor do termo de viés (bias)
+peso_intercepto: number = 0.5    # Peso inicial do viés
+
+# Contador de iterações e inicialização do erro
+contador: number = 0             # Conta quantas iterações foram executadas
+diferenca: number = 1000.0       # Inicializado com valor alto para entrar no loop
+
+/* 
+ * Função de ativação do tipo degrau unitário (Heaviside)
+ * Retorna 1 se o valor for positivo ou zero, e 0 caso contrário
+ */
+func funcao_degrau(valor_soma: number) -> number
+{
+  # Implementação da função degrau (threshold)
+  if(valor_soma >= 0){
+    return 1  # Neurônio ativado
+  }else{
+    return 0  # Neurônio inibido
+  }
+}
+
+# Exibe os valores iniciais do problema
+print("[Perceptron] Valor de entrada:", valor_entrada, "| Saída desejada:", saida_esperada)
+
+# Loop de treinamento - continua até o erro ser zero
+while(diferenca != 0)
+{
+  # Incrementa o contador de iterações
+  contador = contador + 1
+  
+  # Mostra informações da iteração atual
+  print("----- Ciclo de Treinamento:", contador, "-----")
+  print("[Conexão] Peso atual:", peso_sinapse)
+  
+  # Calcula a soma ponderada das entradas
+  soma_ponderada: number = (valor_entrada * peso_sinapse) + (intercepto * peso_intercepto)
+  
+  # Aplica a função de ativação para obter a saída
+  resultado: number = funcao_degrau(soma_ponderada)
+  
+  # Exibe os resultados intermediários
+  print("[Neurônio] Soma ponderada:", soma_ponderada)
+  print("[Neurônio] Saída produzida:", resultado)
+  
+  # Calcula o erro (diferença entre saída esperada e obtida)
+  diferenca = saida_esperada - resultado
+  print("[Treinamento] Erro calculado:", diferenca)
+  
+  # Atualiza os pesos se houver erro
+  if(diferenca != 0)
+  {
+    # Aplica a regra de correção de erro (regra delta)
+    peso_sinapse = peso_sinapse + (taxa_aprendizado * valor_entrada * diferenca)
+    peso_intercepto = peso_intercepto + (taxa_aprendizado * intercepto * diferenca)
+    
+    # Exibe os novos pesos
+    print("[Atualização] Novo peso da sinapse:", peso_sinapse)
+    print("[Atualização] Novo peso do viés:", peso_intercepto)
+  }
+}
+
+# Mensagem de conclusão do treinamento
+print("\n=== TREINAMENTO CONCLUÍDO COM SUCESSO ===")
+print("[Resultado] O perceptron aprendeu a produzir a saída:", saida_esperada)
+print("[Resultado] Pesos finais - Sinapse:", peso_sinapse, "| Viés:", peso_intercepto)

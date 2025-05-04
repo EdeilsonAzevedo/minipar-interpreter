@@ -1,0 +1,222 @@
+/* 
+ * SISTEMA DE RECOMENDAÇÃO PARA E-COMMERCE
+ * 
+ * Este programa implementa um sistema básico de recomendação
+ * utilizando redes neurais para sugerir produtos baseados
+ * no histórico de compras do usuário.
+ */
+
+/* Função para ativação ReLU */
+func relu(x: number) -> number {
+  if (x > 0.0) {
+    return x
+  }
+  return 0.0
+}
+
+/* Função para ativação Sigmoid aproximada */
+func sigmoid(x: number) -> number {
+  if (x < -5.0) {
+    return 0.01
+  }
+  if (x > 5.0) {
+    return 0.99
+  }
+  
+  /* Aproximação linear da sigmoid */
+  if (x < 0.0) {
+    return 0.5 + 0.1 * x
+  }
+  return 0.5 + 0.1 * x
+}
+
+/* Função principal para executar o sistema de recomendação */
+func main() -> void {
+  print("=== SISTEMA DE RECOMENDAÇÃO BASEADO EM REDES NEURAIS ===")
+  print("Analisando histórico de compras do usuário...")
+  
+  /* 
+   * Histórico de compras do usuário
+   * Produtos comprados: Smartphone, Jeans, Micro-ondas, Ficção 
+   */
+  print("\nHistórico de compras do usuário:")
+  print("- Smartphone")
+  print("- Jeans")
+  print("- Micro-ondas")
+  print("- Ficção")
+  
+  /* 
+   * Definimos o histórico como um vetor binário onde 1 indica que o produto
+   * foi comprado e 0 indica que não foi comprado
+   * A ordem segue a lista completa de produtos:
+   * [Smartphone, Laptop, Tablet, Fones de ouvido, 
+   *  Camisa, Jeans, Jaqueta, Sapatos, 
+   *  Geladeira, Micro-ondas, Máquina de lavar, Ar condicionado,
+   *  Ficção, Não-ficção, Ficção científica, Fantasia]
+   */
+  
+  /* Codificação do histórico de compras */
+  h1: number = 1  /* Smartphone */
+  h2: number = 0  /* Laptop */
+  h3: number = 0  /* Tablet */
+  h4: number = 0  /* Fones de ouvido */
+  h5: number = 0  /* Camisa */
+  h6: number = 1  /* Jeans */
+  h7: number = 0  /* Jaqueta */
+  h8: number = 0  /* Sapatos */
+  h9: number = 0  /* Geladeira */
+  h10: number = 1 /* Micro-ondas */
+  h11: number = 0 /* Máquina de lavar */
+  h12: number = 0 /* Ar condicionado */
+  h13: number = 1 /* Ficção */
+  h14: number = 0 /* Não-ficção */
+  h15: number = 0 /* Ficção científica */
+  h16: number = 0 /* Fantasia */
+  
+  print("\nInicializando rede neural...")
+  
+  /* Definindo a arquitetura da rede neural */
+  hidden_size: number = 10
+  
+  /* 
+   * Realizando a propagação direta (forward propagation)
+   * Como temos muitos pesos, vamos usar valores simplificados de 0.5
+   */
+  
+  /* Camada Oculta - Cálculo das entradas (Z1) */
+  z1_1: number = 0.5 * (h1 + h2 + h3 + h4 + h5 + h6 + h7 + h8) + 0.5
+  z1_2: number = 0.5 * (h9 + h10 + h11 + h12 + h13 + h14 + h15 + h16) + 0.5
+  z1_3: number = 0.5 * (h1 + h2 + h3 + h4 + h9 + h10 + h11 + h12) + 0.5
+  z1_4: number = 0.5 * (h5 + h6 + h7 + h8 + h13 + h14 + h15 + h16) + 0.5
+  z1_5: number = 0.5 * (h1 + h3 + h5 + h7 + h9 + h11 + h13 + h15) + 0.5
+  z1_6: number = 0.5 * (h2 + h4 + h6 + h8 + h10 + h12 + h14 + h16) + 0.5
+  z1_7: number = 0.5 * (h1 + h2 + h5 + h6 + h9 + h10 + h13 + h14) + 0.5
+  z1_8: number = 0.5 * (h3 + h4 + h7 + h8 + h11 + h12 + h15 + h16) + 0.5
+  z1_9: number = 0.5 * (h1 + h4 + h6 + h7 + h10 + h11 + h14 + h15) + 0.5
+  z1_10: number = 0.5 * (h2 + h3 + h5 + h8 + h9 + h12 + h13 + h16) + 0.5
+  
+  /* Aplicando a função de ativação ReLU */
+  a1_1: number = relu(z1_1)
+  a1_2: number = relu(z1_2)
+  a1_3: number = relu(z1_3)
+  a1_4: number = relu(z1_4)
+  a1_5: number = relu(z1_5)
+  a1_6: number = relu(z1_6)
+  a1_7: number = relu(z1_7)
+  a1_8: number = relu(z1_8)
+  a1_9: number = relu(z1_9)
+  a1_10: number = relu(z1_10)
+  
+  /* Camada de Saída - Cálculo das entradas (Z2) */
+  z2_1: number = 0.5 * (a1_1 + a1_2 + a1_3 + a1_4 + a1_5) + 0.5  /* Smartphone */
+  z2_2: number = 0.5 * (a1_6 + a1_7 + a1_8 + a1_9 + a1_10) + 0.5 /* Laptop */
+  z2_3: number = 0.5 * (a1_1 + a1_3 + a1_5 + a1_7 + a1_9) + 0.5  /* Tablet */
+  z2_4: number = 0.5 * (a1_2 + a1_4 + a1_6 + a1_8 + a1_10) + 0.5 /* Fones de ouvido */
+  z2_5: number = 0.5 * (a1_1 + a1_4 + a1_7 + a1_8 + a1_10) + 0.5 /* Camisa */
+  z2_6: number = 0.5 * (a1_2 + a1_5 + a1_6 + a1_9 + a1_1) + 0.5  /* Jeans */
+  z2_7: number = 0.5 * (a1_3 + a1_4 + a1_7 + a1_10 + a1_5) + 0.5 /* Jaqueta */
+  z2_8: number = 0.5 * (a1_6 + a1_8 + a1_9 + a1_2 + a1_4) + 0.5  /* Sapatos */
+  z2_9: number = 0.5 * (a1_1 + a1_3 + a1_5 + a1_9 + a1_7) + 0.5  /* Geladeira */
+  z2_10: number = 0.5 * (a1_2 + a1_6 + a1_10 + a1_4 + a1_8) + 0.5 /* Micro-ondas */
+  z2_11: number = 0.5 * (a1_3 + a1_5 + a1_7 + a1_1 + a1_9) + 0.5 /* Máquina de lavar */
+  z2_12: number = 0.5 * (a1_4 + a1_8 + a1_10 + a1_2 + a1_6) + 0.5 /* Ar condicionado */
+  z2_13: number = 0.5 * (a1_1 + a1_3 + a1_7 + a1_9 + a1_5) + 0.5 /* Ficção */
+  z2_14: number = 0.5 * (a1_2 + a1_6 + a1_10 + a1_4 + a1_8) + 0.5 /* Não-ficção */
+  z2_15: number = 0.5 * (a1_3 + a1_5 + a1_9 + a1_1 + a1_7) + 0.5 /* Ficção científica */
+  z2_16: number = 0.5 * (a1_4 + a1_8 + a1_2 + a1_6 + a1_10) + 0.5 /* Fantasia */
+  
+  /* Aplicando a função de ativação Sigmoid */
+  a2_1: number = sigmoid(z2_1)   /* Smartphone */
+  a2_2: number = sigmoid(z2_2)   /* Laptop */
+  a2_3: number = sigmoid(z2_3)   /* Tablet */
+  a2_4: number = sigmoid(z2_4)   /* Fones de ouvido */
+  a2_5: number = sigmoid(z2_5)   /* Camisa */
+  a2_6: number = sigmoid(z2_6)   /* Jeans */
+  a2_7: number = sigmoid(z2_7)   /* Jaqueta */
+  a2_8: number = sigmoid(z2_8)   /* Sapatos */
+  a2_9: number = sigmoid(z2_9)   /* Geladeira */
+  a2_10: number = sigmoid(z2_10) /* Micro-ondas */
+  a2_11: number = sigmoid(z2_11) /* Máquina de lavar */
+  a2_12: number = sigmoid(z2_12) /* Ar condicionado */
+  a2_13: number = sigmoid(z2_13) /* Ficção */
+  a2_14: number = sigmoid(z2_14) /* Não-ficção */
+  a2_15: number = sigmoid(z2_15) /* Ficção científica */
+  a2_16: number = sigmoid(z2_16) /* Fantasia */
+  
+  /* Gerar recomendações com base nas saídas da rede neural */
+  print("\nProcessando recomendações...")
+  print("\nProdutos recomendados para você:")
+  
+  /* 
+   * Recomendamos produtos com valor de saída > 0.5 
+   * e que não estejam no histórico de compras
+   */
+  
+  /* Verificar cada produto */
+  if (a2_1 > 0.5 && h1 == 0) {
+    print("Smartphone")
+  }
+  
+  if (a2_2 > 0.5 && h2 == 0) {
+    print("Laptop")
+  }
+  
+  if (a2_3 > 0.5 && h3 == 0) {
+    print("Tablet")
+  }
+  
+  if (a2_4 > 0.5 && h4 == 0) {
+    print("Fones de ouvido")
+  }
+  
+  if (a2_5 > 0.5 && h5 == 0) {
+    print("Camisa")
+  }
+  
+  if (a2_6 > 0.5 && h6 == 0) {
+    print("Jeans")
+  }
+  
+  if (a2_7 > 0.5 && h7 == 0) {
+    print("Jaqueta")
+  }
+  
+  if (a2_8 > 0.5 && h8 == 0) {
+    print("Sapatos")
+  }
+  
+  if (a2_9 > 0.5 && h9 == 0) {
+    print("Geladeira")
+  }
+  
+  if (a2_10 > 0.5 && h10 == 0) {
+    print("Micro-ondas")
+  }
+  
+  if (a2_11 > 0.5 && h11 == 0) {
+    print("Máquina de lavar")
+  }
+  
+  if (a2_12 > 0.5 && h12 == 0) {
+    print("Ar condicionado")
+  }
+  
+  if (a2_13 > 0.5 && h13 == 0) {
+    print("Ficção")
+  }
+  
+  if (a2_14 > 0.5 && h14 == 0) {
+    print("Não-ficção")
+  }
+  
+  if (a2_15 > 0.5 && h15 == 0) {
+    print("Ficção científica")
+  }
+  
+  if (a2_16 > 0.5 && h16 == 0) {
+    print("Fantasia")
+  }
+}
+
+/* Executar o sistema de recomendação */
+main()

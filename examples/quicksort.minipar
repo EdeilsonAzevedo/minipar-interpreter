@@ -1,0 +1,135 @@
+/* 
+ * ALGORITMO QUICKSORT ULTRA SIMPLIFICADO
+ */
+
+/* Valores globais para armazenar os números */
+v1: number = 0
+v2: number = 0
+v3: number = 0
+v4: number = 0
+v5: number = 0
+v6: number = 0
+v7: number = 0
+v8: number = 0
+v9: number = 0
+v10: number = 0
+total: number = 0
+
+/* Função para obter valor em posição */
+func pegar(i: number) -> number {
+  if (i == 0) { return v1 }
+  if (i == 1) { return v2 }
+  if (i == 2) { return v3 }
+  if (i == 3) { return v4 }
+  if (i == 4) { return v5 }
+  if (i == 5) { return v6 }
+  if (i == 6) { return v7 }
+  if (i == 7) { return v8 }
+  if (i == 8) { return v9 }
+  if (i == 9) { return v10 }
+  return 0
+}
+
+/* Função para definir valor em posição */
+func colocar(i: number, val: number) -> void {
+  if (i == 0) { v1 = val }
+  if (i == 1) { v2 = val }
+  if (i == 2) { v3 = val }
+  if (i == 3) { v4 = val }
+  if (i == 4) { v5 = val }
+  if (i == 5) { v6 = val }
+  if (i == 6) { v7 = val }
+  if (i == 7) { v8 = val }
+  if (i == 8) { v9 = val }
+  if (i == 9) { v10 = val }
+}
+
+/* Função para trocar valores */
+func trocar(a: number, b: number) -> void {
+  t: number = pegar(a)
+  colocar(a, pegar(b))
+  colocar(b, t)
+}
+
+/* Implementação do particionamento */
+func dividir(ini: number, fim: number) -> number {
+  pivo: number = pegar(fim)
+  i: number = ini - 1
+  j: number = ini
+  
+  while (j < fim) {
+    if (pegar(j) <= pivo) {
+      i = i + 1
+      trocar(i, j)
+    }
+    j = j + 1
+  }
+  
+  trocar(i + 1, fim)
+  return i + 1
+}
+
+/* Implementação do quicksort */
+func ordenar(ini: number, fim: number) -> void {
+  if (ini < fim) {
+    p: number = dividir(ini, fim)
+    ordenar(ini, p - 1)
+    ordenar(p + 1, fim)
+  }
+}
+
+/* Função para separar números da entrada */
+func separar_numeros(texto: string) -> void {
+  digito: string = ""
+  i: number = 0
+  qtd: number = 0
+  
+  while (i < len(texto)) {
+    if (texto[i] == " ") {
+      if (len(digito) > 0) {
+        colocar(qtd, to_number(digito))
+        qtd = qtd + 1
+        digito = ""
+      }
+    } else {
+      digito = digito + texto[i]
+    }
+    i = i + 1
+  }
+  
+  if (len(digito) > 0) {
+    colocar(qtd, to_number(digito))
+    qtd = qtd + 1
+  }
+  
+  total = qtd
+}
+
+/* Função para imprimir vetor */
+func imprimir() -> void {
+  i: number = 0
+  while (i < total) {
+    print(pegar(i))
+    i = i + 1
+  }
+}
+
+/* Função principal */
+func main() -> void {
+  print("==== QUICKSORT ====")
+  print("Digite os números:")
+  
+  entrada: string = input()
+  separar_numeros(entrada)
+  
+  print("Números originais:")
+  imprimir()
+  
+  ordenar(0, total - 1)
+  
+  print("Números ordenados:")
+  imprimir()
+}
+
+/* Executa o programa */
+main()
