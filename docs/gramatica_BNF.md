@@ -1,96 +1,133 @@
 # Gramática BNF da Linguagem Minipar
 
 ```text
+
 program         → stmts
 
-stmts           → stmt stmts_tail
-stmts_tail      → stmt stmts_tail
+/* Sequência de instruções */
+stmts           → stmt stmts
                 | ε
 
+/* Tipos de instruções */
 stmt            → compound_stmt
-                | assignment
-                | func_call
-                | channel_stmt
-                | print_stmt
-                | input_stmt
-                | comment
+                | simple_stmt
 
+/* Instruções simples */
+simple_stmt     → declaration
+                | assignment
+                | return_stmt
+                | "break"        /* Interrupção de laços */
+                | "continue"     /* Continuação de laços */
+
+/* Instruções compostas */
 compound_stmt   → function_stmt
                 | if_stmt
                 | while_stmt
                 | seq_stmt
                 | par_stmt
+                | channel_stmt
 
+/* Atribuição de valores a variáveis */
 assignment      → ID "=" expression
 
-block           → stmts  
+/* Declaração de variáveis com tipagem */
+declaration     → ID ":" TYPE ["=" expression]
 
-function_stmt   → "def" ID "(" parameters_opt ")" ":" block "end"
+/* Instrução de retorno de funções */
+return_stmt     → "return" expression
 
-parameters_opt  → ID parameters_tail
+/* Bloco de código delimitado por chaves */
+block           → "{" stmts "}"
+
+/* Definição de funções com tipo de retorno */
+function_stmt   → "func" ID "(" parameters ")" "->" TYPE block
+
+/* Parâmetros de funções */
+parameters      → params
                 | ε
 
-parameters_tail → "," ID parameters_tail
-                | ε
+params          → param ["," params]
 
-if_stmt         → "if" "(" expression ")" stmt else_opt
-else_opt        → "else" stmt
-                | ε
+/* Parâmetro com tipo e valor padrão opcional */
+param           → ID ":" TYPE [default]
 
-while_stmt      → "while" "(" expression ")" stmt
+default         → "=" expression
 
-seq_stmt        → "SEQ" stmts
-par_stmt        → "PAR" stmts
+/* Estrutura condicional com else opcional */
+if_stmt         → "if" "(" expression ")" block [else_block]
 
-channel_stmt    → "c_channel" ID ID ID
+else_block      → "else" block
 
-func_call       → ID "(" arguments_opt ")"
+/* Estrutura de repetição */
+while_stmt      → "while" "(" expression ")" block
 
-print_stmt      → "print" "(" expression ")"
-input_stmt      → ID "=" "input" "(" ")"
+/* Blocos de execução sequencial */
+seq_stmt        → "seq" block
 
-arguments_opt   → expression arguments_tail
-                | ε
+/* Blocos de execução paralela */
+par_stmt        → "par" block
 
-arguments_tail  → "," expression arguments_tail
-                | ε
+/* Definição de canais de comunicação */
+channel_stmt    → s_channel_stmt
+                | c_channel_stmt
 
+/* Canal servidor - recebe função, descrição, host e porta */
+s_channel_stmt  → "s_channel" ID "{" ID "," STRING "," STRING "," NUMBER "}"
+
+/* Canal cliente - recebe host e porta */
+c_channel_stmt  → "c_channel" ID "{" STRING "," NUMBER "}"
+
+/* 
+ * Hierarquia de expressões - define a precedência de operadores
+ * da menor para a maior precedência
+ */
+
+/* Expressões de disjunção (OR lógico) */
 expression      → disjunction
 
-disjunction     → conjunction disjunction_tail
-disjunction_tail→ "||" conjunction disjunction_tail
-                | ε
+disjunction     → conjunction ["||" disjunction]
 
-conjunction     → equality conjunction_tail
-conjunction_tail→ "&&" equality conjunction_tail
-                | ε
+/* Expressões de conjunção (AND lógico) */
+conjunction     → equality ["&&" conjunction]
 
-equality        → comparison equality_tail
-equality_tail   → ("==" | "!=") comparison equality_tail
-                | ε
+/* Expressões de igualdade */
+equality        → comparison [("==" | "!=") equality]
 
-comparison      → sum comparison_tail
-comparison_tail → (">" | "<" | ">=" | "<=") sum comparison_tail
-                | ε
+/* Expressões de comparação */
+comparison      → sum [(">" | "<" | ">=" | "<=") comparison]
 
-sum             → term sum_tail
-sum_tail        → ("+" | "-") term sum_tail
-                | ε
+/* Expressões de soma e subtração */
+sum             → term [("+" | "-") sum]
 
-term            → factor term_tail
-term_tail       → ("*" | "/" | "%") factor term_tail
-                | ε
+/* Expressões de multiplicação, divisão e módulo */
+term            → unary [("*" | "/" | "%") term]
 
-factor          → ("-" | "!") factor
+/* Operadores unários */
+unary           → ("!" | "-") unary
                 | primary
 
+/* Acesso a membros, índices e chamadas de função */
+local           → ID [local_tail]
+
+local_tail      → "." ID [local_tail]
+                | index [local_tail]
+                | "(" arguments ")" [local_tail]
+
+/* Acesso a índice (para strings) */
+index           → "[" expression "]"
+
+/* Argumentos de funções */
+arguments       → expression ["," arguments]
+                | ε
+
+/* Expressões primárias */
 primary         → "(" expression ")"
-                | ID
+                | local
                 | STRING
                 | NUMBER
                 | "true"
                 | "false"
 
-comment         → "#" texto
-
 ```
+
+
