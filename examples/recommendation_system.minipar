@@ -121,6 +121,7 @@ func main() -> void {
   z2_11: number = 0.5 * (a1_3 + a1_5 + a1_7 + a1_1 + a1_9) + 0.5 /* Máquina de lavar */
   z2_12: number = 0.5 * (a1_4 + a1_8 + a1_10 + a1_2 + a1_6) + 0.5 /* Ar condicionado */
   z2_13: number = 0.5 * (a1_1 + a1_3 + a1_7 + a1_9 + a1_5) + 0.5 /* Ficção */
+
   z2_14: number = 0.5 * (a1_2 + a1_6 + a1_10 + a1_4 + a1_8) + 0.5 /* Não-ficção */
   z2_15: number = 0.5 * (a1_3 + a1_5 + a1_9 + a1_1 + a1_7) + 0.5 /* Ficção científica */
   z2_16: number = 0.5 * (a1_4 + a1_8 + a1_2 + a1_6 + a1_10) + 0.5 /* Fantasia */
